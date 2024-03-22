@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-function App() {
+import styled from "styled-components";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+import Home from "./components/Home";
+import CheckOut from "./components/CheckOut";
+import Address from "./components/Address";
+import Payment from "./components/Payment";
+//* for payment integration
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import AddProduct from "./components/AddProduct";
+
+const promise = loadStripe(
+  "pk_test_51OwaFvSAYmxyccwdlxYg2OVXLZ8Drfwe1LKhuAq9bmGVdbbO4W3X0JDvpFTXCd31XHUD69verhWUPxdGLj6e9Ghm002fAP1zNc"
+);
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Container>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/checkout" element={<CheckOut />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/address" element={<Address />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/addproduct" element={<AddProduct />} />
+            <Route
+              path="/payment"
+              element={
+                <Elements stripe={promise}>
+                  <Payment />
+                </Elements>
+              }
+            />
+          </Routes>
+        </Container>
+      </Router>
+    </>
   );
-}
+};
+
+const Container = styled.div`
+  width: 99vw;
+`;
 
 export default App;
