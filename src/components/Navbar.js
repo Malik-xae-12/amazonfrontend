@@ -4,9 +4,18 @@ import { useStateValue } from "../StateProvider";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [{ basket }] = useStateValue();
+  const [{ basket, user }, dispatch] = useStateValue();
+  const navigate = useNavigate();
 
-  const navigate=useNavigate();
+  const signOut = () => {
+    dispatch({
+      type: "SET_USER",
+      user: null,
+    });
+
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
   return (
     <Container>
       <Inner>
@@ -21,13 +30,22 @@ const Navbar = () => {
           </SearchIcon>
         </SearchBar>
         <RightContainer>
-          <NavButton>
-            <p>Hello,</p>
-            <p>Guest</p>
-          </NavButton>
-          <NavButton>
-            <p>Cancel</p>
-            <p>Order</p>
+          {!user ? (
+            <NavButton onClick={() => navigate("/signup")}>
+              <p>Hello,</p>
+              <p>Sign - In</p>
+            </NavButton>
+          ) : (
+            <NavButton
+              onClick={user ? () => signOut() : () => navigate("/login")}
+            >
+              <p>Hello,</p>
+              <p>{user ? user?.fullName : "Guest"}</p>
+            </NavButton>
+          )}
+          <NavButton onClick={() => navigate("/orders")}>
+            <p>Return</p>
+            <p>& Orders</p>
           </NavButton>
           <BasketButton onClick={() => navigate("/checkout")}>
             <img src="./basket-icon.png" alt="" />

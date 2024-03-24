@@ -20,8 +20,6 @@ function Card({ id, image, title, price, rating }) {
     });
   };
 
- 
-
   return (
     <Container>
       <Image>
@@ -74,6 +72,7 @@ const Description = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   flex: 0.7;
+  
 
   h5 {
     font-size: 16px;
@@ -91,6 +90,7 @@ const Description = styled.div`
     border: none;
     border-radius: 10px;
     cursor: pointer;
+    margin-bottom: 20px;
   }
 `;
 export default Card;

@@ -10,8 +10,8 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const Payment = () => {
   const navigate = useNavigate();
-  const [{ address,basket },dispatch] = useStateValue();
-  const [{ }] = useStateValue();
+  const [{ address, basket ,user}, dispatch] = useStateValue();
+
   const [clientSecret, setClientSecret] = useState("");
 
   const elements = useElements();
@@ -19,19 +19,15 @@ const Payment = () => {
 
   useEffect(() => {
     const fetchClientSecret = async () => {
-      try {
-        const response = await axios.post("/payment/create", {
-          amount: getBasketTotal(basket),
-        });
-        setClientSecret(response.data.clientSecret);
-        console.log("client secret: " + response.data.clientSecret);
-      } catch (error) {
-        console.error("Error fetching client secret:", error);
-        // Handle the error here, such as displaying an error message to the user
-      }
+      const data = await axios.post("/payment/create", {
+        amount: getBasketTotal(basket),
+      });
+      console.log(data.data.clientSecret);
+      setClientSecret(data.data.clientSecret);
     };
 
     fetchClientSecret();
+    console.log("clientSecret is >>>>", clientSecret);
   }, []);
 
   const confirmPayment = async (e) => {
@@ -44,15 +40,19 @@ const Payment = () => {
         },
       })
       .then((result) => {
-        alert("payment Succesful");
+        axios.post("/orders/add", {
+          basket: basket,
+          price: getBasketTotal(basket),
+          email: user?.email,
+          address: address,
+        });
         dispatch({
-          type:"EMPTY_BASKET"
-        })
+          type: "EMPTY_BASKET",
+        });
+        // alert("Payment successful");
         navigate("/");
       })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .catch((err) => console.warn(err));
   };
 
   return (
