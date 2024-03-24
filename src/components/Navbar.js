@@ -7,7 +7,7 @@ const Navbar = () => {
   const [{ basket, user }, dispatch] = useStateValue();
   const navigate = useNavigate();
 
-  const signOut = () => {
+  const signOut = () => {  
     dispatch({
       type: "SET_USER",
       user: null,
